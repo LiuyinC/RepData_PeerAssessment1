@@ -2,18 +2,41 @@
 
 
 ## Loading and preprocessing the data
-
-
-
+```{r}
+ActivityData <- read.csv("./activity.csv", head = T)
+head(ActivityData)
+```
 ## What is mean total number of steps taken per day?
-
-
-
+Since the date data is stored as factor, we can calculate the sum of steps per day by the function rowsum.
+```{r}
+sumsteps <- rowsum(ActivityData$steps, ActivityData$date,na.rm = T)
+hist(sumsteps, xlab = "Total number of steps per day")
+```
+And the mean is
+```{r}
+meansteps <- mean(sumsteps)
+meansteps
+```
+and median is 
+```{r}
+mediansteps <- median(sumsteps)
+mediansteps
+```
 ## What is the average daily activity pattern?
+Now considering the intervals as factors, we can get the average steps during 5-minute interval through these 2 months.
+```{r}
+intervals <- unique(ActivityData$interval)
+intervalsteps <- tapply(ActivityData$steps, ActivityData$interval, mean, na.rm = T)
+plot(intervals, intervalsteps,type = "l", ylab = "Number of steps")
+```
 
-
+The maximum of steps is contained in the interval:
+```{r}
+intervals[which.max(intervalsteps)]
+```
 
 ## Imputing missing values
+
 
 
 
