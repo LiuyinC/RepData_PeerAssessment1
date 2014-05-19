@@ -36,8 +36,37 @@ intervals[which.max(intervalsteps)]
 ```
 
 ## Imputing missing values
-
-
-
-
+There are lots of missing data in the dataset. The number of missing value in our dataset is the row difference between the original data and the data without missing values.
+```{r}
+nrow(ActivityData) - nrow(ActivityData[complete.cases(ActivityData),])
+```
+In order to estimate the effect of missing values on daily activity, we can introduce a strategy that replaces NA with the average steps for that 5 minutes interval and saved in a new dataset named NewActData.
+```{r}
+NewActData <- ActivityData
+ActivityData <- cbind(ActivityData, estimated = NA)
+for (i in 1:nrow(ActivityData)) {
+    if (is.na(ActivityData[i,1])) {
+        NewActData[i,1] = intervalsteps[which(intervals == ActivityData[i,3])]
+        } else {
+        NewActData[i,1] = ActivityData[i,1]
+        }
+}
+head(NewActData)
+```
+Now make a new histogram of the total number of steps in new dataset.
+```{r}
+Newsumsteps <- rowsum(NewActData$steps, NewActData$date,na.rm = T)
+hist(Newsumsteps, xlab = "Total number of steps per day")
+```
+And the mean is
+```{r}
+Newmeansteps <- mean(Newsumsteps)
+Newmeansteps
+```
+and median is 
+```{r}
+Newmediansteps <- median(Newsumsteps)
+Newmediansteps
+```
+However, by this strategy for replacing missing value increases the average or median of the total daily number of steps. 
 ## Are there differences in activity patterns between weekdays and weekends?
